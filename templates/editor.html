@@ -1,0 +1,18 @@
+{%  extends 'base.html' %}
+{% block title %}-Write blogs{% endblock %}
+{% block content %}
+<title>TinyMCE Integration</title>
+    <script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#editor',
+            height: 400,
+            plugins: 'link image code',
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code'
+        });
+    </script>
+    <body>
+        <h1>TinyMCE Integration</h1>
+        <textarea id="editor"></textarea>
+    </body>
+{% endblock %}

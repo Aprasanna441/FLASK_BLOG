@@ -1,10 +1,12 @@
 import json
 from models.models import db,User 
-from flask import jsonify,render_template,request,redirect,flash,url_for,session
-from flask_login import login_user, logout_user, login_required
+from flask import jsonify,render_template,request,redirect,flash,url_for,session,Blueprint
+from flask_login import login_user, logout_user, login_required,current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_session import Session
 
 
+controllers = Blueprint('controllers', __name__)
 
 
 import time
@@ -78,6 +80,7 @@ def login():
         
         if  check_password_hash(user.password_hash, password):
              session['username']=username
+             login_user(user)
              
             
              return redirect(url_for('blueprint.index')) 
@@ -96,8 +99,19 @@ def logout():
 def error():
     return "<h1>ERRO</h1>"
 
+@controllers.route('/dashboard')
+@login_required
 def dashboard():
-    return "Dashboard"
+    var=session["username"]
+    user=User.query.filter_by(username=var).first()
+    return render_template("dashboard.html",user=user)
+
+
+def create_blog():
+    if   session.get("username")  is not None:
+      return render_template("editor.html")
+    else:
+        return redirect(url_for('blueprint.login_signup'))
 
     
     

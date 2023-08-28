@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_migrate import Migrate
 from routes.routes import blueprint
-from models.models import db
+from models.models import db,User
+from controller.controller import controllers
 
-from flask_login import LoginManager
 
 #flask db init to initialize migration
 
@@ -19,13 +19,24 @@ def create_app():
     return app
 
 
-
-
-
+from flask_session import Session
+from flask_login import LoginManager
+login_manager = LoginManager()
 app = create_app()  # Creating the app
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+
+login_manager.init_app(app)
+login_manager.login_view = 'routes.login_signup' 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Registering the blueprint
 app.register_blueprint(blueprint, url_prefix='/')
+app.register_blueprint(controllers)
 
 migrate = Migrate(app, db)  # Initializing the migration
 

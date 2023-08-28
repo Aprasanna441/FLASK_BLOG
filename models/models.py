@@ -17,10 +17,11 @@ class User(db.Model,UserMixin):
     password_hash = db.Column(db.String(120), nullable=False)
 
     def __repr__(self):
-        return '<userid %r>' % self.id
+        return  self.user_id
     
     def get_id(self):
-        return self.id
+        
+        return self.user_id
 
     
 class BlogPost(db.Model):

@@ -1,4 +1,9 @@
-{% extends 'base.html' }
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock%}
 {% block content %}
-dashboard
+Username:{{user.username}}
+
+
+<br>
+Member since:{{user.created_at}}
 {% endblock %}
