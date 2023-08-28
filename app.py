@@ -3,6 +3,7 @@ from flask_migrate import Migrate
 from routes.routes import blueprint
 from models.models import db
 
+from flask_login import LoginManager
 
 #flask db init to initialize migration
 
@@ -18,10 +19,16 @@ def create_app():
     return app
 
 
+
+
+
 app = create_app()  # Creating the app
+
 # Registering the blueprint
 app.register_blueprint(blueprint, url_prefix='/')
+
 migrate = Migrate(app, db)  # Initializing the migration
+
 
 
 

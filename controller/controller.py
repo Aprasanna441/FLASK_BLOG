@@ -1,8 +1,13 @@
 import json
 from models.models import db,User 
-from flask import jsonify,render_template,request
+from flask import jsonify,render_template,request,redirect,flash,url_for,session
+from flask_login import login_user, logout_user, login_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
+
+
+import time
 def index():
     return render_template("index.html")
 
@@ -15,7 +20,7 @@ def create():
     
 
 
-# insert data into table.
+#insert data into table.
 def insert():
      data=User(user_id=1,username="Prasanna",password="Hello",email="happyprasan@gmail.com")
      db.session.add(data)
@@ -29,13 +34,70 @@ def list():
 
 
 #AUTHENTICATION.
-def signup():
+
+def login_signup():
     return render_template('authentication.html')
 
+def signup():
+    if request.method=='POST':
+        email=request.form.get("email")
+        username=request.form.get("username")
+        password=request.form.get("password")
+        password_confirm=request.form.get("password_confirm")
+
+        user = User.query.filter_by(username=username).first()
+        if user:
+            flash('Username already exists. Please choose another.', 'danger')
+            return "<h1>Vak</h1>"
+        elif password != password_confirm:
+            flash("Not",'danger')
+            return  redirect(url_for('login_signup'))
+        else:
+            session['username']=username
+            password_hash = generate_password_hash(password)
+            user=User(username=username,password_hash=password_hash,email=email)
+            db.session.add(user)
+            db.session.commit()
+            
+            flash("added",'danger')
+            
+            
+            return  redirect('/')
+        
+
+
+
 def login():
-    name=request.form.get("username")
-    sport=request.form.get("password")
-    return "<h1>Login success</h1>"
+    username=request.form.get("username")
+    password=request.form.get("password")
+    user=User.query.filter_by(username=username).first()
+  
+
+    if user:
+         
+        
+        if  check_password_hash(user.password_hash, password):
+             session['username']=username
+             
+            
+             return redirect(url_for('blueprint.index')) 
+        return "<h1>Incorrect Password</h1>"
+    
+    return "<h1>No user exist</h1>"
+
+   
+
+def logout():
+    # logout_user()
+    session.pop('username',None)
+    return redirect(url_for('blueprint.index'))
+
+
+def error():
+    return "<h1>ERRO</h1>"
+
+def dashboard():
+    return "Dashboard"
 
     
     
