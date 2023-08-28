@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block title %} Index {% endblock %}
 {% block content %}
-  {{session['username']}}
-    {% for d in data %}
-    <h1>{{d.username}}</h1>
-    {% endfor %}
-
-Hello
+<ul>
+{% for blog, content in zip(blogs, blogss) %}
+<li>
+    
+    {{blog}}
+</li>
+{% endfor %}
+</ul>
     {% endblock %}

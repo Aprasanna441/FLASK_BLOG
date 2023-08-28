@@ -1,5 +1,5 @@
 import json
-from models.models import db,User 
+from models.models import db,User ,BlogPost
 from flask import jsonify,render_template,request,redirect,flash,url_for,session,Blueprint
 from flask_login import login_user, logout_user, login_required,current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -109,9 +109,25 @@ def dashboard():
 
 def create_blog():
     if   session.get("username")  is not None:
-      return render_template("editor.html")
+       if request.method =="POST":
+           var=session["username"]
+           user=User.query.filter_by(username=var).first()
+           editor_content=request.form.get('editor_content')
+           post=BlogPost(content=editor_content,user=user,user_id=user.get_id())
+           db.session.add(post)
+           db.session.commit()
+           return "Content submitted successfully!"
+        
+       return render_template("editor.html",cont=editor_content)
     else:
         return redirect(url_for('blueprint.login_signup'))
-
     
+
+import re
+def blogfeed():
+    
+    blogss=BlogPost.query.all()
+    blogs = [re.sub(r'<.*?>', '', blog.content) for blog in blogss]
+    return render_template("index.html",blogss=blogss,blogs=blogs,zip=zip)
+
     
