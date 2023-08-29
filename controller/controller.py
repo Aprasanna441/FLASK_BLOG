@@ -53,7 +53,7 @@ def signup():
             return "<h1>Vak</h1>"
         elif password != password_confirm:
             flash("Not",'danger')
-            return  redirect(url_for('login_signup'))
+            return  redirect(url_for('blueprint.login_signup'))
         else:
             session['username']=username
             password_hash = generate_password_hash(password)
@@ -106,28 +106,35 @@ def dashboard():
     user=User.query.filter_by(username=var).first()
     return render_template("dashboard.html",user=user)
 
-
+@login_required
 def create_blog():
-    if   session.get("username")  is not None:
+    if   (session.get("username") ) is not None:
        if request.method =="POST":
            var=session["username"]
            user=User.query.filter_by(username=var).first()
            editor_content=request.form.get('editor_content')
-           post=BlogPost(content=editor_content,user=user,user_id=user.get_id())
+           title=request.form.get('title')
+           category=request.form.get('category')
+           post=BlogPost(content=editor_content,user=user,user_id=user.get_id(),category=category,title=title)
            db.session.add(post)
            db.session.commit()
-           return "Content submitted successfully!"
+           
         
-       return render_template("editor.html",cont=editor_content)
+       return render_template("editor.html")
     else:
         return redirect(url_for('blueprint.login_signup'))
     
 
 import re
+
 def blogfeed():
     
     blogss=BlogPost.query.all()
     blogs = [re.sub(r'<.*?>', '', blog.content) for blog in blogss]
     return render_template("index.html",blogss=blogss,blogs=blogs,zip=zip)
 
-    
+
+def index():
+    blogss=BlogPost.query.all()
+    blogs = [re.sub(r'<.*?>', '', blog.content) for blog in blogss]
+    return render_template("index.html",blogss=blogss,blogs=blogs,zip=zip)

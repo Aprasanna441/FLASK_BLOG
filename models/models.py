@@ -29,4 +29,7 @@ class BlogPost(db.Model):
     user=db.relationship('User',backref='person',lazy=True)
     content=db.Column(db.Text,nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+    title=db.Column(db.String(120),nullable=False)
+    timestamp=db.Column(db.DateTime,default=datetime.utcnow,nullable=False)
+    category=db.Column(db.String(50),nullable=False)
 
