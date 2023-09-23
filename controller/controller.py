@@ -138,3 +138,49 @@ def index():
     blogss=BlogPost.query.all()
     blogs = [re.sub(r'<.*?>', '', blog.content) for blog in blogss]
     return render_template("index.html",blogss=blogss,blogs=blogs,zip=zip)
+
+
+
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+#api section
+
+
+
+def  api_signup():
+        data=request.get_json()
+        email=data.get("email")
+        username=data.get("username")
+        password=data.get("password")
+        password_confirm=data.get("password_confirm")
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            return jsonify({"status":"Failed","Message":"User Already exist"}), 200
+            
+        elif password != password_confirm:
+            return jsonify({"status":"Failed","Message":"Password and Confirm Password doesnt match"}), 200
+        else:
+            access_token = create_access_token(identity=username)
+            password_hash = generate_password_hash(password)
+            user=User(username=username,password_hash=password_hash,email=email)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({"status":"Success","Message":"User Registered Successfully","access_token":access_token}), 200
+            
+           
+def login_api():
+    data=request.get_json()
+    username=data.get("username")
+    password=data.get("password")
+    user=User.query.filter_by(username=username).first()
+  
+
+    if user:    
+        if  check_password_hash(user.password_hash, password):
+             access_token = create_access_token(identity=username)
+             return jsonify({"message": "User is verified successfully","access_token":access_token}), 201 
+        return  jsonify({"message": "Incorrect Email or Password"}), 400
+    
+    return  jsonify({"message": "No user exists"}), 400
+            
+          

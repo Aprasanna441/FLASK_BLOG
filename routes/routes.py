@@ -1,6 +1,8 @@
 from flask import Blueprint
 from controller.controller import index, create, insert,list,signup,login,login_signup,error,dashboard
 from controller.controller import logout,create_blog,blogfeed
+from controller.controller import  api_signup,login_api
+
 blueprint = Blueprint('blueprint', __name__)
 
 blueprint.route('/', methods=['GET'])(index)
@@ -14,7 +16,11 @@ blueprint.route('/*', methods=['GET'])(error)
 blueprint.route('/logout', methods=['GET'])(logout)
 blueprint.route('/dashboard', methods=['GET'])(dashboard)
 blueprint.route('/create_blog', methods=['GET','POST'])(create_blog)
-blueprint.route('/', methods=['GET'])(blogfeed)
+blueprint.route('/blogfeed', methods=['GET'])(blogfeed)
+blueprint.route('/api_signup', methods=['POST'])( api_signup)
+blueprint.route('/api_login', methods=['POST'])( login_api)
+
+
 
 
 

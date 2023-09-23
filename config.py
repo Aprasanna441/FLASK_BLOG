@@ -1,7 +1,9 @@
 import os
 
+
 # Each Flask web application contains a secret key which used to sign session cookies for protection against cookie data tampering.
 SECRET_KEY = os.urandom(32)
+
 
 # Grabs the folder where the script runs.
 # In my case it is, "F:\DataScience_Ai\hobby_projects\mvc_project\src"

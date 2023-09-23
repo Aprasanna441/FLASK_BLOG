@@ -2,16 +2,19 @@
 {% block title %} Index {% endblock %}
 {% block content %}
 <ul>
-    {% if blogss%}
+    {% if blogss %}
 {% for blog, content in zip(blogs, blogss) %}
 <li>
-    Category {{content.category}} <br>
-    {{content.timestamp}} <br>
+   Written By:{{content.user}} <br>
+    Category :{{content.category}} <br>
+    Published Date:{{content.timestamp}} <br>
     {{content.title}} <br>
     {{blog}} <br>
     
 </li>
+<br><br>
 {% endfor %}
 {% endif %}
 </ul>
+
     {% endblock %}

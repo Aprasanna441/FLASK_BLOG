@@ -16,8 +16,9 @@ class User(db.Model,UserMixin):
     posts = db.relationship('BlogPost', backref='author', lazy=True)  # One-to-many relationship
     password_hash = db.Column(db.String(120), nullable=False)
 
-    def __repr__(self):
-        return  self.user_id
+    def __str__(self):
+        return  self.username
+    
     
     def get_id(self):
         
